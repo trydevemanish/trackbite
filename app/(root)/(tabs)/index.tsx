@@ -22,6 +22,7 @@ export default function Index() {
 
     const fetchLatestMeal = async() => {
       try {
+
         setLoading(true)
 
         const res  = await fetch(`${process.env.EXPO_PUBLIC_CALL_BACKEND_API}/meal/latest`,{
@@ -31,9 +32,9 @@ export default function Index() {
           },
           body : JSON.stringify({ userid: user?.$id })   
         })
-  
+        
         if(!res){
-          throw new Error('Response invald')
+          throw new Error('Response invalid') 
         }
         
         const data = await res.json()
@@ -43,7 +44,7 @@ export default function Index() {
       } catch (error) {
         console.error('Issue Occured fetching data',error)
       } finally {
-        setLoading(false)
+        setLoading(false) 
       }
     }
 

@@ -80,6 +80,8 @@ const scan = () => {
         encoding: FileSystem.EncodingType.Base64,
       });
 
+      console.log('Uploading Image to the backend')
+
       const response  = await fetch(`${process.env.EXPO_PUBLIC_CALL_BACKEND_API}/meal/upload`,{
         method : 'POST',
         headers : {
@@ -87,6 +89,8 @@ const scan = () => {
         },
         body : JSON.stringify({ foodImage:base64 })
       })
+
+      console.log('Receiveing response from the backend')
 
       if(!response){
         console.error('Response not received')

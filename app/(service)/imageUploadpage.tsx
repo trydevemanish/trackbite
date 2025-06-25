@@ -148,7 +148,11 @@ export default function ImageUploadpage() {
   return (
     <View className='bg-accent-100 min-h-screen object-cover relative '>
         {/* <Image source={localPhotoCatured ? {uri:localPhotoCatured} : require('@/assets/images/chicken.jpg')} className='blur-xl absolute brightness-75'/> */}
-        <Image source={{uri:localPhotoCatured}} className='blur-xl absolute brightness-75'/>
+        {/* <Image source={{uri:localPhotoCatured}} className='blur-xl absolute brightness-75'/> */}
+        <Image
+            source={{ uri: localPhotoCatured }}
+            className="w-full h-[32rem] absolute blur-xl brightness-75"
+        />
         <TouchableOpacity className='absolute top-14 right-10 p-2 bg-[#fff] rounded-full' onPress={() => router.replace('/scan')}>
             <Image source={require('@/assets/icons/delete.png')} className='size-6' />
         </TouchableOpacity>
