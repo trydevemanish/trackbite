@@ -1,13 +1,14 @@
 import Addingpeice from '@/components/Addingpeice';
 import NutritionValue from '@/components/NutritionValue';
 import PickerComponent from '@/components/Picker';
-import { config } from '@/lib/appwrite';
+import { config, storage } from '@/lib/appwrite';
 import { useGlobalContext } from '@/lib/GlobalContext';
 import { FoodDetailInterface } from '@/types/type';
 import useDataStore, { datatype } from '@/utils/usestore';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ID } from 'react-native-appwrite';
 
 type SettingItemsProps = {
     title : string,
@@ -66,34 +67,27 @@ export default function ImageUploadpage() {
         }
     }
 
-    async function storeImageToAppWriteStorage(photouri:string){
+    async function storeImageToAppWriteStorage(photouri:string) {
         try {
 
-            const fileName = photouri.split('/').pop();
-            const fileType = 'image/jpg';
+            const fileName = photouri.split('/').pop() || 'trackbite-meal-image.jpg';
+            const fileType = 'image/jpeg';
 
-            const formData = new FormData();
+            const file = {
+                name : fileName,
+                type : fileType,
+                size : 1234567,
+                uri : photouri,
+            };
 
-            formData.append('file', {
-                value: photouri,
-                name: fileName,
-                type: fileType,
-            } as any);
-            
-            const response = await fetch(`https://${config.endpoint}/v1/storage/buckets/${config.storageid}/files`, {
-                method: 'POST',
-                headers: {
-                    'X-Appwrite-Project': `${config.projectId}`,
-                    'Content-Type': 'multipart/form-data',
-                },
-                body: formData,
-            });
+            console.log('checknig file till here',file) 
+            console.log('process.env.EXPO_PUBLIC_APPWRITE_STORAGE_ID',process.env.EXPO_PUBLIC_APPWRITE_STORAGE_ID) 
 
-            const data = await response.json();
+            const result = await storage.createFile(`${process.env.EXPO_PUBLIC_APPWRITE_STORAGE_ID}`, ID.unique(), file);
 
-            console.log('Uploaded file:', data);
+            const fileId = result.$id;
 
-            return data;
+            return fileId;
 
         } catch (error) {
          console.error(`Issue Occured while Adding Image to Appwrite storge`,error)   
@@ -108,12 +102,20 @@ export default function ImageUploadpage() {
             }
 
             // get the localpath of the image
-            const filepath = storeImageToAppWriteStorage(localPhotoCatured)
-            
+            const fileId = await storeImageToAppWriteStorage(localPhotoCatured)
+
+            if(!fileId){
+                throw new Error('Image file id not received')
+            }
+
+            const filePath = `${config.endpoint}/storage/buckets/${config.storageid}/files/${fileId}/view?project=${config.projectId}`
+
+            // https://fra.cloud.appwrite.io/v1/storage/buckets/685e515600342233b78c/files/685e67410019172eece0/view?project=683a9c600004ee373c29
+
             const foodData = {
                 userid : user?.$id,
                 foodname : foodNamePassed,
-                foodImageUrl : filepath,
+                foodImageUrl : filePath,
                 calories : fetchedFoodDetail?.calories?.value,
                 protein : fetchedFoodDetail?.protein?.value,
                 carbs : fetchedFoodDetail?.carbs?.value,
@@ -147,11 +149,9 @@ export default function ImageUploadpage() {
 
   return (
     <View className='bg-accent-100 min-h-screen object-cover relative '>
-        {/* <Image source={localPhotoCatured ? {uri:localPhotoCatured} : require('@/assets/images/chicken.jpg')} className='blur-xl absolute brightness-75'/> */}
-        {/* <Image source={{uri:localPhotoCatured}} className='blur-xl absolute brightness-75'/> */}
         <Image
             source={{ uri: localPhotoCatured }}
-            className="w-full h-[32rem] absolute blur-xl brightness-75"
+            className="w-full h-[32rem] absolute"
         />
         <TouchableOpacity className='absolute top-14 right-10 p-2 bg-[#fff] rounded-full' onPress={() => router.replace('/scan')}>
             <Image source={require('@/assets/icons/delete.png')} className='size-6' />
@@ -206,3 +206,11 @@ export default function ImageUploadpage() {
     </View>
   )
 }
+
+// const response = await fetch(`https://${config.endpoint}/v1/storage/buckets/${config.storageid}/files`, {
+            //     method: 'POST',
+            //     headers: {
+            //         'X-Appwrite-Project': `${config.projectId}`,
+            //     },
+            //     body: formData,
+            // });
