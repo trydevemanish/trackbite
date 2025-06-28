@@ -26,7 +26,7 @@ const singleMealReport = () => {
         },
         {
           label1:'Date and Time',
-          label2: singleMealData?.$createdAt ? singleMealData?.$createdAt.toString() : 'date'
+          label2: singleMealData?.timestamp ? singleMealData?.timestamp.toString() : 'date'
         }
     ]
 
@@ -156,7 +156,7 @@ const singleMealReport = () => {
                 </View>
 
                 <View className='flex flex-col items-start gap-2 mt-8'>
-                    <Text className='text-xl'>Other Macro Info about meal: </Text>
+                    <Text className='text-xl font-rubik-medium'>Other Macro Info about meal: </Text>
                     <View className='flex flex-col item-start gap-5 mt-6 px-7'>
                         {
                           mealNutritionValue.map((data:mealNutritionValuetype,idx:number) => (
@@ -175,7 +175,7 @@ const singleMealReport = () => {
                 </View> */}
 
                 <View className='flex flex-col items-start gap-2 mt-8'>
-                    <Text className='text-xl'>A PieChart That show your meal logs: </Text>
+                    <Text className='text-xl font-rubik-medium'>A PieChart That show your meal logs: </Text>
 
                     <PieChart
                       data={dataforpiechart}
@@ -206,8 +206,10 @@ const singleMealReport = () => {
                 </View>
             </View>
             
-            <View className='px-6 py-6'>
-              <Text className='font-rubik-semibold text-xl text-[#4147b4]'>Generate more Detail with Ai + </Text>
+            <View className='px-6 py-10'>
+              <TouchableOpacity onPress={() => router.push('/whatyoushoulddo')}>
+                <Text className='font-rubik-semibold text-xl text-[#4147b4]'>Generate more Detail with Ai + </Text>
+              </TouchableOpacity>
             </View>
 
         </View>

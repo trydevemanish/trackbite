@@ -184,7 +184,7 @@ const todayReport = () => {
                     <TextInput
                         placeholder="Search by name"
                         value={searchbyFoodName}
-                        onChangeText={(text) => setSearchByFoodName(text)}
+                        onChangeText={(text) => setSearchByFoodName(text.toLowerCase())}
                         className="w-[22rem] p-3"
                     />
     

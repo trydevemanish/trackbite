@@ -21,7 +21,7 @@ const TabsLayout = () => {
                 position : 'absolute',
                 // borderTopColor : '#0061FF1A',
                 // borderTopWidth : 1,
-                minHeight : 110,
+                minHeight : 70,
             }
         }}
     >

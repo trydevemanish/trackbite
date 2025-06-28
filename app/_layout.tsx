@@ -3,6 +3,7 @@ import GlobalProvider from "@/lib/GlobalContext";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
+import { StatusBar } from 'react-native';
 import './global.css';
 
 export default function RootLayout() {
@@ -41,6 +42,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <GlobalProvider>
+        <StatusBar backgroundColor={'#000'}   />
         {/* <Stack screenOptions={{ headerShown : false }} initialRouteName={initialRoute} /> */}
         <Stack screenOptions={{ headerShown : false }} />
       </GlobalProvider>

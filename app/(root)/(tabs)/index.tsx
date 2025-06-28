@@ -95,7 +95,7 @@ export default function Index() {
                   <NutritionValueforArrayInput mealData={mealData}  />
                   <View className="py-7 flex flex-row item-center gap-2">
                     <Image source={require('@/assets/icons/light.png')} className="size-7" />
-                      <TouchableOpacity>
+                      <TouchableOpacity onPress={() => router.push('/whatyoushoulddo')}>
                         <Text className="font-rubik-medium text-lg text-[#35c863]">+ How you can lose this calorie ?</Text>
                       </TouchableOpacity>
                   </View>

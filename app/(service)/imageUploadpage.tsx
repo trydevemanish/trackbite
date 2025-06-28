@@ -16,7 +16,6 @@ type SettingItemsProps = {
     textStyle? : string
 }
 
-
 const Settingitems = ({title,onPress,textStyle} : SettingItemsProps) => (
   <View className='bg-[#fff] shadow-lg shadow-[#fff] rounded-3xl px-8 py-2'>
     <TouchableOpacity onPress={onPress} className='shadow-lg shadow-[#fff]'>
@@ -148,69 +147,69 @@ export default function ImageUploadpage() {
     }
 
   return (
-    <View className='bg-accent-100 min-h-screen object-cover relative '>
-        <Image
-            source={{ uri: localPhotoCatured }}
-            className="w-full h-[32rem] absolute"
-        />
-        <TouchableOpacity className='absolute top-14 right-10 p-2 bg-[#fff] rounded-full' onPress={() => router.replace('/scan')}>
-            <Image source={require('@/assets/icons/delete.png')} className='size-6' />
-        </TouchableOpacity>
-        {/* This is where the whole peice work. */}
-        <View className='absolute top-40 bg-accent-100 min-h-screen w-full'>
-            <ScrollView>
-                <View className='flex flex-row justify-center'>
-                    <Image source={require('@/assets/icons/horizontal.png')} className='size-8'  />
-                </View>
-                
-                <View className='px-6 py-6'>
-                {/* this is a picker component  */}
-                <PickerComponent selectedMealType={selectedMealType} setSelectedMealType={setSelectedMealType} />
-                <View className='mt-6'>
-                    <Text className='font-rubik-medium text-lg'>Select matching item ...</Text>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} className='py-5'>
-                        <View className='flex flex-row gap-4 items-center'>
-                            {data?.map((data:datatype) => (
-                                <Settingitems 
-                                    title={data?.title} 
-                                    key={data?.id} 
-                                    onPress={() =>{
-                                        setFoodName(data?.title)
-                                        fetchDatafromApi(data?.title)
-                                    }} 
-                                />
-                            ))}
+    <ScrollView>
+        <View className='bg-accent-100 min-h-screen object-cover relative '>
+            <Image
+                source={{ uri: localPhotoCatured }}
+                className="w-full h-[32rem] absolute"
+            />
+            <TouchableOpacity className='absolute top-10 right-10 p-2 bg-[#fff] rounded-full' onPress={() => router.replace('/scan')}>
+                <Image source={require('@/assets/icons/delete.png')} className='size-6' />
+            </TouchableOpacity>
+            {/* This is where the whole peice work. */}
+            <View className='absolute top-40 bg-accent-100 min-h-screen w-full'>
+                <ScrollView>
+                    <View className='flex flex-row justify-center'>
+                        <Image source={require('@/assets/icons/horizontal.png')} className='size-8'  />
+                    </View>
+                    
+                    <View className='px-6 py-6'>
+                    {/* this is a picker component  */}
+                        <PickerComponent selectedMealType={selectedMealType} setSelectedMealType={setSelectedMealType} />
+
+                        <View className='mt-8'>
+                            <Text className='font-rubik-medium text-lg'>Select matching item ...</Text>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false} className='py-5 mt-5'>
+                                <View className='flex flex-row gap-4 items-center'>
+                                    {data?.map((data:datatype) => (
+                                        <Settingitems 
+                                            title={data?.title} 
+                                            key={data?.id} 
+                                            onPress={() =>{
+                                                setFoodName(data?.title)
+                                                fetchDatafromApi(data?.title)
+                                            }} 
+                                        />
+                                    ))}
+                                </View>
+                            </ScrollView>
                         </View>
-                    </ScrollView>
-                </View>
-                <View className='flex flex-col justify-center gap-6 mt-6'>
-                    <View className='flex flex-row items-center justify-between'>
-                        <Text className='font-rubik-medium text-xl '>{foodName ? foodName : 'Selected Item Name'}</Text> 
-                        {/* for meal quantity  */}
-                        <Addingpeice selectedMealQuantity={selectedMealQuantity} setSelectedMealTypeQuantity={setSelectedMealTypeQuantity} />
+
+                        <View className='flex flex-row items-center py-6 justify-between'>
+                            <Text className='font-rubik-medium text-xl '>{foodName ? foodName : 'Selected Item Name'}</Text> 
+                            {/* for meal quantity  */}
+                            <Addingpeice selectedMealQuantity={selectedMealQuantity} setSelectedMealTypeQuantity={setSelectedMealTypeQuantity} />
                         </View>
+
                         {/* for nutrition logs  */}
                         <NutritionValue foodDetail={fetchedFoodDetail} />
                     </View>
-                    <View className='mt-6'>
-                        <TouchableOpacity className='py-3 rounded-xl px-6 bg-[#fff]'>
-                            <Text className='text-[#41b867] font-rubik-bold text-lg '>+      Add item</Text>
-                        </TouchableOpacity>
+                        
+                    <View className='bg-accent-100 shadow-lg shadow-[#fff] w-full rounded-md'>
+                        <View className='py-6 flex flex-row items-center justify-between px-6'>
+                            <TouchableOpacity className='bg-[#fff] rounded-xl  shadow-2xl shadow-[#fff]  px-16 py-4' onPress={() => router.back()}>
+                                <Text className='font-rubik-medium text-center'>Cancel</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity className='bg-[#41b867] shadow-2xl shadow-[#fff] rounded-xl px-16 py-4' onPress={() => addtoDatabase(selectedMealQuantity,foodName,fetchedFoodDetail!)}>
+                                <Text className='text-accent-100 font-rubik-medium text-center'>Submit</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
-                <TouchableOpacity className='bg-[#fff] shadow-lg mt-10 shadow-[#fff] w-full py-8 rounded-md' onPress={() => addtoDatabase(selectedMealQuantity,foodName,fetchedFoodDetail!)}>
-                    <Text className='text-[#41b867] font-rubik-medium text-center'>Submit</Text>
-                </TouchableOpacity>
-            </ScrollView>
+                    
+                </ScrollView>
+            </View>
         </View>
-    </View>
+    </ScrollView>
   )
 }
-
-// const response = await fetch(`https://${config.endpoint}/v1/storage/buckets/${config.storageid}/files`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'X-Appwrite-Project': `${config.projectId}`,
-            //     },
-            //     body: formData,
-            // });

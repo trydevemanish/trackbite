@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 export default function Addingpeice(
@@ -9,16 +9,13 @@ export default function Addingpeice(
     selectedMealQuantity:number  | undefined ,
     setSelectedMealTypeQuantity:React.Dispatch<React.SetStateAction<number | undefined>>
   }) {
-    const count = useRef(0);
 
     const increaeCount = async() => {
-        count.current += 1;
-        setSelectedMealTypeQuantity(count.current)
+        setSelectedMealTypeQuantity(prev => (prev ?? 0) + 1)
     }
 
     const decreaeCount = async() => {
-        count.current -= 1;
-        setSelectedMealTypeQuantity(count.current)
+        setSelectedMealTypeQuantity(prev => (prev ?? 0) - 1)
     }
 
   return (
@@ -28,7 +25,7 @@ export default function Addingpeice(
       </TouchableOpacity>
 
       <Text className="text-xl font-rubik-bold min-w-[24px] text-center">
-        {selectedMealQuantity}
+        {selectedMealQuantity ?? 0}
       </Text>
 
       <TouchableOpacity onPress={increaeCount} className=" px-2">

@@ -1,13 +1,10 @@
-import Reminder from '@/assets/icons/reminder.png';
-import RightArrow from "@/assets/icons/rightarrow.png";
-import Scan from '@/assets/icons/scan.png';
 import Refer from "@/components/Refer";
 import { logout } from '@/lib/appwrite';
 import { useGlobalContext } from '@/lib/GlobalContext';
 import * as Notifications from 'expo-notifications';
 import { router } from "expo-router";
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, ImageSourcePropType, ScrollView, StatusBar, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, ImageSourcePropType, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface SettingItemsProps {
@@ -42,28 +39,15 @@ export default function Profile() {
     }
   }
 
-  const usefullService = [
-    {
-      'title' : 'scan',
-      'scan' : Scan,
-      'handleFunction' : () => router.push('/scan')
-    },
-    {
-      'title' : 'Reminder to drink water',
-      'scan' : Reminder,
-      'handleFunction' : () => console.log('remonder')
-    }
-  ]
-
-  const Settingitems = ({icon,title,onPress,textStyle,showArrow=true,showSwitch=false} : SettingItemsProps) => (
-    <TouchableOpacity onPress={onPress} className='flex flex-row items-center justify-between py-3 bg-[#056tg4] '>
+  const Settingitems = ({icon,title,onPress,textStyle,showSwitch=false} : SettingItemsProps) => (
+    <TouchableOpacity onPress={onPress} className='flex flex-row items-center justify-between w-full py-2 bg-[#056tg4] '>
       <View className='flex flex-row items-center gap-3'>
         <Image source={icon} className='size-6'/>
         <Text className={`text-lg font-rubik-medium text-black-DEFAUlt ${textStyle}`}>{title}</Text>
       </View>
-
-      {showArrow && <Image source={RightArrow} className='size-5' />}
-      {showSwitch && <Switch value={startWaterNotification} onValueChange={() => setStartWaterNotification(prev => !prev)} /> }
+      <View>
+        {showSwitch && <Switch value={startWaterNotification} thumbColor={'#000'} onValueChange={() => setStartWaterNotification(prev => !prev)} /> }
+      </View>
     </TouchableOpacity>
   )
 
@@ -106,17 +90,16 @@ export default function Profile() {
         showsVerticalScrollIndicator={false}
         contentContainerClassName='pb-32 px-7'
       >
-        <StatusBar backgroundColor={'#000'}   />
         <View className='flex flex-row justify-between items-center mt-10 '>
           <TouchableOpacity onPress={() => router.back()}>
               <View className="flex flex-row items-center gap-3">
                 <Image source={require("@/assets/icons/back.png")} className='size-5'/>
-                <Text className='text-lg font-rubik-light'>Back</Text>
+                <Text className='text-lg font-rubik-medium'>Back</Text>
               </View>
           </TouchableOpacity>
         </View>
 
-        <View className="mt-8">
+        <View className="mt-10">
           <View className="flex flex-row items-center justify-between">
             <View className="flex flex-row items-start gap-6">
               <Image source={{ uri:user?.avatar }} className='size-20 rounded-xl' />
@@ -125,7 +108,7 @@ export default function Profile() {
                 <Text className='text-sm'>{  isloggedIn? user?.email :'example@gmail.com'}</Text>
               </View>
             </View>
-            <Image source={require('@/assets/icons/edit.png')} className="size-6" />
+            {/* <Image source={require('@/assets/icons/edit.png')} className="size-6" /> */}
           </View>
         </View>
 
@@ -135,13 +118,12 @@ export default function Profile() {
 
         <View className="mt-5 bg-[#fff] shadow-lg shadow-[#fff] rounded-xl px-4">
             <Settingitems icon={require('@/assets/icons/logout.png')} title='Logout' textStyle='text-danger' showArrow={false} onPress={handleLogout} />
+            <Settingitems icon={require('@/assets/icons/scan.png')} title='Scan' showArrow={false} onPress={() => router.push('/signin')} />
         </View>
 
         <View className="mt-6 bg-[#fff] shadow-lg shadow-[#fff] rounded-xl">
             <View className="flex flex-col items-start px-4">
-              {usefullService.map((data: usefullServiceType,index:number) => (
-                <Settingitems key={index} onPress={data?.handleFunction} icon={data?.scan} showSwitch={true} title={data?.title} showArrow={false} />
-              ))}
+              <Settingitems icon={require('@/assets/icons/reminder.png')} title='Reminder to drink water' showArrow={false} onPress={() => router.push('/signin')} showSwitch={true} />
             </View>
         </View>
 
