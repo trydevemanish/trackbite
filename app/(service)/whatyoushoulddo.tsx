@@ -4,13 +4,35 @@
 
 import useDataStore from '@/utils/usestore';
 import Groq from "groq-sdk";
-import React from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+type Activity = {
+  activity: string;
+  time: string;
+};
+
+type ActivitiesByIntensity = {
+  light: Activity[];
+  moderate: Activity[];
+  intense: Activity[];
+};
+
+type CountdownProps = {
+  initialSeconds: number;
+  onFinish: () => void;
+};
 
 const Whatyoushoulddo = () => {
   const passingCalorieDataToAiModel = useDataStore(state => state.passingCalorieDataToAiModel)
   const groq = new Groq({ apiKey:process.env.EXPO_PUBLIC_GROK_API_KEY });
+  const [userWeight,setUserWeight] = useState('56')
+  const [userAge,setUserAge] = useState('24')
+  const [activeTimer, setActiveTimer] = useState<{
+    activity: string;
+    remaining: number;
+  } | null>(null);
 
   const systemPrompt = `You are a fitness and nutrition assistant. Your role is to suggest personalized activity options to help users burn a specific amount of calories.
 
@@ -48,9 +70,63 @@ const Whatyoushoulddo = () => {
 
   Assume average MET (Metabolic Equivalent of Task) values unless user-specific adjustments are required.`;
 
+  const calorie = 3478;
+  console.log('passingCalorieDataToAiModel',passingCalorieDataToAiModel)
+  const data: ActivitiesByIntensity = {
+  light: [
+    { activity: "Walking", time: "735 minutes" },
+    { activity: "Yoga", time: "870 minutes" }
+  ],
+  moderate: [
+    { activity: "Cycling", time: "235 minutes" },
+    { activity: "Swimming", time: "255 minutes" }
+  ],
+  intense: [
+    { activity: "Running", time: "130 minutes" },
+    { activity: "HIIT", time: "110 minutes" }
+  ]
+};
+
+const startTimer = (activity: string, minutesStr: string) => {
+    const minutes = parseInt(minutesStr);
+    setActiveTimer({
+      activity,
+      remaining: minutes * 60 // convert to seconds
+    });
+  };
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}m ${s}s`;
+  };
+
+  function CountdownTimer({ initialSeconds, onFinish }: CountdownProps) {
+  const [seconds, setSeconds] = useState(initialSeconds);
+
+  React.useEffect(() => {
+    if (seconds <= 0) {
+      onFinish();
+      return;
+    }
+    const interval = setInterval(() => {
+      setSeconds((s) => s - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [seconds]);
+
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+
+  return (
+    <Text className="text-2xl font-semibold">
+      {m}m {s}s
+    </Text>
+  );
+}
 
   async function GenerateSomeHelpsfullsuggesstion(){
-    return groq.chat.completions.create({
+    const completion = await groq.chat.completions.create({
       messages: [
         {
           role: "system",
@@ -58,23 +134,104 @@ const Whatyoushoulddo = () => {
         },
         {
           role: "user",
-          content: `You have Gained this much calorie till now ${passingCalorieDataToAiModel}`,
+          content: `
+            Calorie amount to burn: ${calorie}
+            User weight: 60 kg
+            User Age: 24
+          `,
         },
       ],
       model: "llama-3.3-70b-versatile",
-      temperature: 0.5,
-      max_completion_tokens: 1024,
-      top_p: 1,
-      stop: null,
-      stream: true,
     });
+
+    const response = completion.choices[0]?.message?.content
+
+    console.log('response',response)
   }
 
   return (
     <SafeAreaView>
       <ScrollView>
-        <View className='px-6 py-10'>
-          <Text>This is a page for the suggestiion with the Ai</Text>
+        <View className='px-6 py-6'>
+
+          <View>
+            <View className='bg-[#d0c264] rounded-xl '>
+              <Text className='text-base font-rubik-medium text-accent-100 pl-4 py-4'>! This content is generated with Ai.</Text>
+            </View>
+            <View className='border border-black-DEFAUlt p-3 mt-2 rounded-xl'>
+              <View className='flex flex-col p-1 gap-3'>
+                <Text className='font-medium text-lg'>Calorie amount to burn: {calorie} kcal. </Text>
+                <Text className='font-medium text-lg'>User weight: {userWeight} kg</Text>
+                <Text className='font-medium text-lg'>User Age: {userAge}</Text>
+                <TouchableOpacity className='bg-black-DEFAUlt py-1 mt-2 rounded-xl'>
+                  <Text className='text-base text-accent-100 text-center font-rubik-medium px-4 py-2'>Submit</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+
+          <View className='py-4'>
+            <Text>
+              You can follow these steps to loose calorie
+            </Text>
+          </View>
+
+          <View className="flex-1 p-4 bg-white">
+      {(["light", "moderate", "intense"] as const).map((level) => (
+        <View key={level} className="mb-6">
+          <Text className="text-xl font-bold mb-2 capitalize text-[#333]">
+            {level} Intensity
+          </Text>
+          {data[level].map((item) => (
+            <View
+              key={item.activity}
+              className="flex flex-row justify-between items-center bg-gray-100 p-3 mb-2 rounded-xl shadow"
+            >
+              <View>
+                <Text className="text-lg font-semibold text-[#222]">
+                  {item.activity}
+                </Text>
+                <Text className="text-gray-600">{item.time}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => startTimer(item.activity, item.time)}
+                className="bg-blue-500 px-3 py-2 rounded-lg"
+              >
+                <Text className="text-white font-medium">Start Timer</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      ))}
+
+      {/* Timer Modal */}
+      <Modal visible={!!activeTimer} transparent animationType="slide">
+        <View className="flex-1 justify-center items-center bg-black/60">
+          <View className="bg-white p-6 rounded-2xl w-80 items-center">
+            {activeTimer && (
+              <>
+                <Text className="text-xl font-bold mb-2">
+                  {activeTimer.activity}
+                </Text>
+                <CountdownTimer
+                  initialSeconds={activeTimer.remaining}
+                  onFinish={() => setActiveTimer(null)}
+                />
+                <TouchableOpacity
+                  onPress={() => setActiveTimer(null)}
+                  className="mt-4 bg-red-500 px-4 py-2 rounded-lg"
+                >
+                  <Text className="text-white font-medium">Stop Timer</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
+    </View>
+  );
+
+
         </View>
       </ScrollView>
     </SafeAreaView> 
