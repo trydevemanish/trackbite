@@ -123,7 +123,7 @@ export default function Index() {
                         (
                           mealData.map((data:mealDataType,index:number) => (
                             <View key={index}>
-                              <Recentmeal onPress={() => handleCardPress(data?.$id)} foodname={data?.foodname} calorie={data?.calories} uploadedon={data?.timestamp} />
+                              <Recentmeal onPress={() => handleCardPress(data?.$id)} foodImageUrl={data?.foodImageUrl} foodname={data?.foodname} calorie={data?.calories} uploadedon={data?.timestamp} />
                               <View className="mt-7 relative">
                                 <View className="flex flex-col items-center gap-2 mt-8">
                                   <Text>Track every bite, by scanning easily.</Text>

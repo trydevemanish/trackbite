@@ -119,8 +119,6 @@ const todayReport = () => {
         
         const data = await res.json()
 
-        console.log(data)
-        
         setTotalCalorieCountForToday(await calculateTotalCalorieOfToday(data?.data))
 
         setAllMealData(data?.data)
@@ -134,6 +132,7 @@ const todayReport = () => {
 
     fetchAllMealData() 
   },[])
+  
 
   return (
     <SafeAreaView>
@@ -220,10 +219,10 @@ const todayReport = () => {
                               {
                                 searchbyFoodName ? 
                                 (
-                                  data.foodname.includes(searchbyFoodName) && <Recentmeal onPress={() => handleCardPress(data?.$id)} foodname={data?.foodname} calorie={data?.calories} uploadedon={data?.timestamp} />
+                                  data.foodname.includes(searchbyFoodName) && <Recentmeal onPress={() => handleCardPress(data?.$id)} foodname={data?.foodname} foodImageUrl={data?.foodImageUrl} calorie={data?.calories} uploadedon={data?.timestamp} />
                                 ) : 
                                 (
-                                  <Recentmeal onPress={() => handleCardPress(data?.$id)} foodname={data?.foodname} calorie={data?.calories} uploadedon={data?.timestamp} />
+                                  <Recentmeal onPress={() => handleCardPress(data?.$id)} foodname={data?.foodname} calorie={data?.calories} uploadedon={data?.timestamp} foodImageUrl={data?.foodImageUrl} />
                                 )
                               }
                             </View>

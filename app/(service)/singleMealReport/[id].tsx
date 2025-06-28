@@ -30,6 +30,30 @@ const singleMealReport = () => {
         }
     ]
 
+    const mealNutritionValue = [
+      {
+        name : 'Protein',
+        value : singleMealData?.protein ? `${singleMealData?.protein} g`: '0g'
+      },
+      {
+        name : 'Carbohydrate',
+        value : singleMealData?.carbs ? `${singleMealData?.carbs} g`: '0g'
+      },
+      {
+        name : 'Fat',
+        value : singleMealData?.fat ? `${singleMealData?.fat} g`: '0g'
+      },
+      {
+        name : 'fiber',
+        value : singleMealData?.fiber ? `${singleMealData?.fiber} g`: '0g'
+      },
+    ]
+
+    type mealNutritionValuetype = {
+      name : string,
+      value : string
+    }
+
     const dataforpiechart = [
       {
         name: 'Calories',
@@ -97,7 +121,7 @@ const singleMealReport = () => {
         <View className='relative w-full'>
           <View style={{ height: windowHeight / 3 }}>
             <Image
-              source={require("@/assets/onboardingimage/2.jpg")}
+              source={singleMealData?.foodImageUrl ? {uri:singleMealData?.foodImageUrl} : require("@/assets/onboardingimage/2.jpg")}
               className='size-full max-h-80'
               resizeMode='cover'
             />
@@ -110,7 +134,7 @@ const singleMealReport = () => {
                 <View className='flex flex-row items-center w-full justify-between absolute top-0 pt-4'>
                     <TouchableOpacity
                         onPress={() => router.back()} 
-                        className="flex flex-row bg-primary-200 rounded-full size-11 gap-1 items-center justify-center"
+                        className="flex flex-row bg-primary-200 min-w-20 shadow-accent-100 shadow-md rounded-2xl bg-accent-100 size-11 gap-1 items-center justify-center"
                     >
                         <Image source={require('@/assets/icons/back.png')} className="size-5" />
                         <Text className='text-base font-rubik-medium'>back</Text>
@@ -134,29 +158,21 @@ const singleMealReport = () => {
                 <View className='flex flex-col items-start gap-2 mt-8'>
                     <Text className='text-xl'>Other Macro Info about meal: </Text>
                     <View className='flex flex-col item-start gap-5 mt-6 px-7'>
-                         <View className='flex flex-row w-full'>
-                            <Text className='flex-1 text-lg font-rubik-medium'> - Protein</Text>
-                            <Text className='flex-1 text-sm text-right'>{singleMealData?.protein ? `${singleMealData.protein}g` : '0g'}</Text>
-                        </View>
-                        <View className='flex flex-row w-full'>
-                            <Text className='flex-1 text-lg font-rubik-medium'> - Carbohydrate</Text>
-                            <Text className='flex-1 text-sm text-right'>{singleMealData?.carbs ? `${singleMealData.carbs}g` : '0g'}</Text>
-                        </View>
-                         <View className='flex flex-row w-full'>
-                            <Text className='flex-1 text-lg font-rubik-medium'> - Fat</Text>
-                            <Text className='flex-1 text-sm text-right'>{singleMealData?.fat ? `${singleMealData.fat}g` : '0g'}</Text>
-                        </View>
-                        <View className='flex flex-row w-full'>
-                            <Text className='flex-1 text-lg font-rubik-medium'> - Fiber</Text>
-                            <Text className='flex-1 text-sm text-right'>0.0g</Text>
-                        </View>
+                        {
+                          mealNutritionValue.map((data:mealNutritionValuetype,idx:number) => (
+                            <View className='flex flex-row w-full' key={idx}>
+                                <Text className='flex-1 text-lg font-rubik-medium'>{data?.name}</Text>
+                                <Text className='flex-1 text-sm text-right'>{data?.value}</Text>
+                            </View>
+                          ))
+                        }
                     </View>
                 </View>
 
-                <View className='flex flex-col items-start gap-2 mt-8'>
+                {/* <View className='flex flex-col items-start gap-2 mt-8'>
                     <Text className='text-xl'>Dieatry Label</Text>
                     <Text className='font-rubik-medium pl-10 text-lg'> - Non Vegan</Text>
-                </View>
+                </View> */}
 
                 <View className='flex flex-col items-start gap-2 mt-8'>
                     <Text className='text-xl'>A PieChart That show your meal logs: </Text>
@@ -164,7 +180,7 @@ const singleMealReport = () => {
                     <PieChart
                       data={dataforpiechart}
                       width={Dimensions.get("window").width}
-                      height={280}
+                      height={250}
                       chartConfig={{
                           backgroundColor: "#e26a00",
                           backgroundGradientFrom: "#fb8c00",
