@@ -1,5 +1,6 @@
 import FaqCard from '@/components/FAQ';
 import { mealDataType } from '@/types/type';
+import useDataStore from '@/utils/usestore';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, Image, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
@@ -116,6 +117,11 @@ const singleMealReport = () => {
       fetchSingleMealDetail()
     },[])
 
+    function handlemovetoAiRecommandationPage(calorie:string){
+      useDataStore.getState().setPassingCalorieDataToAiModel(calorie)
+      router.push('/whatyoushoulddo')
+    }
+
   return (
     <ScrollView contentContainerClassName='pb-10'>
         <View className='relative w-full'>
@@ -131,7 +137,7 @@ const singleMealReport = () => {
                 top: Platform.OS === "ios" ? 70 : 20,
               }}
             >
-                <View className='flex flex-row items-center w-full justify-between absolute top-0 pt-4'>
+                <View className='flex flex-row items-center w-full justify-between absolute top-0 pt-6'>
                     <TouchableOpacity
                         onPress={() => router.back()} 
                         className="flex flex-row bg-primary-200 min-w-20 shadow-accent-100 shadow-md rounded-2xl bg-accent-100 size-11 gap-1 items-center justify-center"
@@ -207,8 +213,8 @@ const singleMealReport = () => {
             </View>
             
             <View className='px-6 py-10'>
-              <TouchableOpacity onPress={() => router.push('/whatyoushoulddo')}>
-                <Text className='font-rubik-semibold text-xl text-[#4147b4]'>Generate more Detail with Ai + </Text>
+              <TouchableOpacity onPress={() => handlemovetoAiRecommandationPage(singleMealData?.calories.toString()!)}>
+                <Text className='font-rubik-semibold text-xl text-[#4147b4]'>How can i loose this calorie + </Text>
               </TouchableOpacity>
             </View>
 
