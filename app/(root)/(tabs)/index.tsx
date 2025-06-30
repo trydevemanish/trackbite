@@ -5,6 +5,7 @@ import { dummyMealData } from "@/constant/data";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useGlobalContext } from "@/lib/GlobalContext";
 import { mealDataType } from '@/types/type';
+import useDataStore from "@/utils/usestore";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
@@ -15,8 +16,10 @@ export default function Index() {
   const { currentTheme,toggleTheme } = useContext(ThemeContext);
   // this state is used for the state of data received from calling this fetchlatestmeal method.
   const [mealData,setMealData] = useState<mealDataType[] | null>(null)
+  const [latestMealCalorie,setLatestMealCalorie] = useState('')
   const [loading,setLoading] = useState<boolean>(false)
   const { user,refetch } = useGlobalContext()
+  
 
   useEffect(() => {
 
@@ -41,6 +44,8 @@ export default function Index() {
 
         setMealData(data?.data)
 
+        setLatestMealCalorie(data?.data[0]?.calories)
+
       } catch (error) {
         console.error('Issue Occured fetching data',error)
       } finally {
@@ -56,6 +61,11 @@ export default function Index() {
       pathname: "/singleMealReport/[id]",
       params: { id },
     });
+  }
+
+  function handlemovetoAiRecommandationPage(calorie:string){
+    useDataStore.getState().setPassingCalorieDataToAiModel(calorie)
+    router.push('/whatyoushoulddo')
   }
   
   return (
@@ -95,7 +105,7 @@ export default function Index() {
                   <NutritionValueforArrayInput mealData={mealData}  />
                   <View className="py-7 flex flex-row item-center gap-2">
                     <Image source={require('@/assets/icons/light.png')} className="size-7" />
-                      <TouchableOpacity onPress={() => router.push('/whatyoushoulddo')}>
+                      <TouchableOpacity onPress={() => handlemovetoAiRecommandationPage(latestMealCalorie)}>
                         <Text className="font-rubik-medium text-lg text-[#35c863]">+ How you can lose this calorie ?</Text>
                       </TouchableOpacity>
                   </View>

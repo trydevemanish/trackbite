@@ -40,6 +40,7 @@ const todayReport = () => {
 
   async function calculateTotalCalorieOfToday(data:mealDataType[]){
     let totalCalorie = 0;
+    
     data.forEach((datafeild:mealDataType) => {
       totalCalorie = totalCalorie + datafeild?.calories
     })
@@ -64,8 +65,6 @@ const todayReport = () => {
 
         setLoading(true); 
 
-        console.log(selectedDate)
-
         const res = await fetch(`${process.env.EXPO_PUBLIC_CALL_BACKEND_API}/meal/date`,{
           method : 'POST',
           headers : {
@@ -79,8 +78,6 @@ const todayReport = () => {
         }
         
         const data = await res.json()
-
-        console.log('data of a date',data)
 
         setTotalCalorieCountForToday(await calculateTotalCalorieOfToday(data?.data))
 
@@ -132,8 +129,12 @@ const todayReport = () => {
 
     fetchAllMealData() 
   },[])
-  
 
+  function handlemovetoAiRecommandationPage(calorie:string){
+    useDataStore.getState().setPassingCalorieDataToAiModel(calorie)
+    router.push('/whatyoushoulddo')
+  }
+  
   return (
     <SafeAreaView>
       <FlatList 
@@ -160,10 +161,10 @@ const todayReport = () => {
                 </View>
 
                 {
-                  seachByDate === null && (
+                  seachByDate != null && (
                     <View className="py-6 flex flex-row item-center gap-2">
                       <Image source={require('@/assets/icons/light.png')} className="size-7" />
-                      <TouchableOpacity onPress={() => router.push('/whatyoushoulddo')}>
+                      <TouchableOpacity onPress={() => handlemovetoAiRecommandationPage(totalCalorieCountForToday!.toString())}>
                         <Text className="font-rubik-medium text-lg text-[#35c863]">+ How you can lose this calorie ?</Text>
                       </TouchableOpacity>
                     </View>
