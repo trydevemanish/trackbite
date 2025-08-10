@@ -10,6 +10,7 @@ import React, { useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { ID } from 'react-native-appwrite';
 
+
 type SettingItemsProps = {
     title : string,
     onPress? : () => void,
@@ -32,6 +33,7 @@ export default function ImageUploadpage() {
     // this state will tell if it is breakfast ,lunch ,dinner.
     const [selectedMealType, setSelectedMealType] = useState('breakfast');  
     const [selectedMealQuantity, setSelectedMealTypeQuantity] = useState<number>();  
+    const [submitting,setSubmitting] = useState(false)
 
     // this data is used to show user similiar options of meal to search calrioe of that meal.
     const data = useDataStore(state => state.data)
@@ -57,8 +59,6 @@ export default function ImageUploadpage() {
     
             const data = await response.json()
     
-            console.log('Data from the spoonacular api...',data?.data)
-
             setFetchedFoodDetail(data?.data)
 
         } catch (error) {
@@ -79,9 +79,6 @@ export default function ImageUploadpage() {
                 uri : photouri,
             };
 
-            console.log('checknig file till here',file) 
-            console.log('process.env.EXPO_PUBLIC_APPWRITE_STORAGE_ID',process.env.EXPO_PUBLIC_APPWRITE_STORAGE_ID) 
-
             const result = await storage.createFile(`${process.env.EXPO_PUBLIC_APPWRITE_STORAGE_ID}`, ID.unique(), file);
 
             const fileId = result.$id;
@@ -96,6 +93,8 @@ export default function ImageUploadpage() {
     async function addtoDatabase(selectedMealQuantity:number | undefined, foodNamePassed:string,fetchedFoodDetail:FoodDetailInterface){
         try {
 
+            setSubmitting(true)
+
             if(!fetchedFoodDetail){
                 throw new Error('FetchFoodDetail is not applicable.')
             }
@@ -109,16 +108,27 @@ export default function ImageUploadpage() {
 
             const filePath = `${config.endpoint}/storage/buckets/${config.storageid}/files/${fileId}/view?project=${config.projectId}`
 
-            // https://fra.cloud.appwrite.io/v1/storage/buckets/685e515600342233b78c/files/685e67410019172eece0/view?project=683a9c600004ee373c29
 
             const foodData = {
                 userid : user?.$id,
                 foodname : foodNamePassed,
                 foodImageUrl : filePath,
-                calories : fetchedFoodDetail?.calories?.value,
-                protein : fetchedFoodDetail?.protein?.value,
-                carbs : fetchedFoodDetail?.carbs?.value,
-                fat : fetchedFoodDetail?.fat?.value,
+                calories : 
+                selectedMealQuantity && selectedMealQuantity != 0 ?
+                fetchedFoodDetail?.calories?.value * selectedMealQuantity : fetchedFoodDetail?.calories?.value,
+
+                protein : 
+                selectedMealQuantity && selectedMealQuantity != 0 ?
+                fetchedFoodDetail?.protein?.value * selectedMealQuantity : fetchedFoodDetail?.protein?.value,
+                
+                carbs : 
+                selectedMealQuantity && selectedMealQuantity != 0 ?
+                fetchedFoodDetail?.carbs?.value * selectedMealQuantity : fetchedFoodDetail?.carbs?.value,
+
+                fat : 
+                selectedMealQuantity && selectedMealQuantity != 0 ?
+                fetchedFoodDetail?.fat?.value * selectedMealQuantity : fetchedFoodDetail?.fat?.value,
+                
                 mealType : selectedMealType,
                 quantity : selectedMealQuantity,
             }
@@ -134,21 +144,21 @@ export default function ImageUploadpage() {
             if(!response.ok){
                 throw new Error(await response.text())
             }
-    
-            const data = await response.json()
-    
-            console.log(data?.message)
 
+            setSubmitting(false)
+    
             router.push('/')
 
         } catch (error) {
             console.error('Error Cocured while Adding it to db', error)
+        } finally {
+            setSubmitting(false)
         }
     }
 
   return (
     <ScrollView>
-        <View className='bg-accent-100 min-h-screen object-cover relative '>
+        <View className='bg-accent-100 min-h-screen object-cover relative'>
             <Image
                 source={{ uri: localPhotoCatured }}
                 className="w-full h-[32rem] absolute"
@@ -192,17 +202,24 @@ export default function ImageUploadpage() {
                         </View>
 
                         {/* for nutrition logs  */}
-                        <NutritionValue foodDetail={fetchedFoodDetail} />
+                        <NutritionValue foodDetail={fetchedFoodDetail} selectedMealQuantity={selectedMealQuantity} />
                     </View>
                         
-                    <View className='bg-accent-100 shadow-lg shadow-[#fff] w-full rounded-md'>
+                    <View className='bg-accent-100 shadow-lg shadow-[#fff] w-full absolute top-[43rem] rounded-md'>
                         <View className='py-6 flex flex-row items-center justify-between px-6'>
                             <TouchableOpacity className='bg-[#fff] rounded-xl  shadow-2xl shadow-[#fff]  px-16 py-4' onPress={() => router.back()}>
                                 <Text className='font-rubik-medium text-center'>Cancel</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity className='bg-[#41b867] shadow-2xl shadow-[#fff] rounded-xl px-16 py-4' onPress={() => addtoDatabase(selectedMealQuantity,foodName,fetchedFoodDetail!)}>
-                                <Text className='text-accent-100 font-rubik-medium text-center'>Submit</Text>
+                                <Text className='text-accent-100 font-rubik-medium text-center'>
+                                    {
+                                        submitting ?
+                                        'submiting...'
+                                        :
+                                        'Submit'
+                                    }
+                                </Text>
                             </TouchableOpacity>
                         </View>
                     </View>

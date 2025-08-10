@@ -11,12 +11,18 @@ export default function Signin() {
   if(!loading && isloggedIn) return <Redirect href={'/'} />
 
   const handleLogin = async() => {
-    const result = await login()
+    try {
 
-    if(result){
-      refetch();
-    } else {
-      Alert.alert('Error','Failed to login')
+      const result = await login()
+
+      if(result){
+        refetch();
+      } else {
+        Alert.alert('Error','Failed to login')
+      }
+      
+    } catch (error) {
+      console.log('Issue Occured while logging in', error)
     }
   }
 

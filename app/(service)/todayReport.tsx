@@ -18,7 +18,6 @@ const todayReport = () => {
   const [searchbyFoodName,setSearchByFoodName] = useState('')
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [seachByDate,setSearchByDate] = useState<Date | null>(null);
-  const [refresh,setRefresh] = useState(false)
 
   const router = useRouter()
 
@@ -90,10 +89,6 @@ const todayReport = () => {
       }
     }
 
-  const handelRefresh = async() => {
-    setSearchByDate(null)
-    setRefresh(prev => !prev)
-  }
 
   useEffect(() => {
 

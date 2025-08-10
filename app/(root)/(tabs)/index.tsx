@@ -13,12 +13,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   const router = useRouter()
-  const { currentTheme,toggleTheme } = useContext(ThemeContext);
+
   // this state is used for the state of data received from calling this fetchlatestmeal method.
   const [mealData,setMealData] = useState<mealDataType[] | null>(null)
   const [latestMealCalorie,setLatestMealCalorie] = useState('')
   const [loading,setLoading] = useState<boolean>(false)
-  const { user,refetch } = useGlobalContext()
+  const { user } = useGlobalContext()
   
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function Index() {
         if(!res){
           throw new Error('Response invalid') 
         }
-        
+
         const data = await res.json()
 
         setMealData(data?.data)
@@ -54,7 +54,7 @@ export default function Index() {
     }
 
     fetchLatestMeal() 
-  },[])
+  },[user])
 
   const handleCardPress = (id:string) => {
     router.push({
@@ -64,6 +64,11 @@ export default function Index() {
   }
 
   function handlemovetoAiRecommandationPage(calorie:string){
+    if(!calorie){
+      console.log('Calorie is undefined')
+      return
+    }
+    
     useDataStore.getState().setPassingCalorieDataToAiModel(calorie)
     router.push('/whatyoushoulddo')
   }
@@ -71,11 +76,11 @@ export default function Index() {
   return (
     <SafeAreaView>
       <ScrollView contentContainerClassName="pb-48 min-h-screen bg-accent-100" horizontal={false} showsVerticalScrollIndicator={false} >
-        <View className={`${currentTheme == 'dark' ? 'bg-black-DEFAUlt text-accent-100' : 'bg-accent-100 text-black-DEFAUlt'}  min-h-screen px-6 py-4`}>
+        <View className={`bg-accent-100 text-black-DEFAUlt  min-h-screen px-6 py-4`}>
 
           <View className="flex flex-row items-center justify-between mt-5">
             <View className="flex flex-col items-start">
-                <Text className={`font-rubik-medium text-xl ${currentTheme == 'dark' ?'text-accent-100' : 'text-black-DEFAUlt'} `}>Trackbite</Text>
+                <Text className={`font-rubik-medium text-xl text-black-DEFAUlt `}>Trackbite</Text>
             </View>
             <TouchableOpacity onPress={() => router.push('/profile')}>
               <Image source={{ uri : user?.avatar }}  className="size-10 rounded-full" />

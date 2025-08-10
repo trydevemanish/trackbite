@@ -1,3 +1,4 @@
+import { router } from 'expo-router'
 import React from 'react'
 import { Image, Text, TouchableOpacity, View } from 'react-native'
 
@@ -16,7 +17,7 @@ export default function Refer() {
                 <Text className='font-rubik-bold text-lg text-[#fff] shadow-black-DEFAUlt shadow-lg'>Live Peacefully With Your Loved One.</Text>
                 <Text className='font-rubik-medium text-base text-[#fff]'>Be a yarr, help other with trackbite</Text>
             </View>
-            <TouchableOpacity className='bg-[#35c863] rounded-xl self-start px-4 py-2'>
+            <TouchableOpacity className='bg-[#35c863] rounded-xl self-start px-4 py-2' onPress={() => router.push('/scan')}>
               <Text>Get started</Text>
             </TouchableOpacity>
         </View>

@@ -1,24 +1,3 @@
-const onboardingdata = [
-    {
-        id: 1,
-        title : 'Welcome to trackbite',
-        summary : 'the dot indicator component for the slider next, or help you implement skip-onboarding logic based on whether the user has already completed it',
-        image: require('../assets/onboardingimage/1.jpeg')
-    },
-    {
-        id: 2,
-        title : 'Eat Smarter,Track macros, calories & more — effortlessly',
-        summary : 'the dot indicator component for the slider next, or help you implement skip-onboarding logic based on whether the user has already completed it',
-        image: require('../assets/onboardingimage/foodImage1.jpg')
-    },
-    {
-        id: 3,
-        title : 'Ready to Start?',
-        summary : 'the dot indicator component for the slider next, or help you implement skip-onboarding logic based on whether the user has already completed it',
-        image: require('../assets/onboardingimage/foodImage2.jpg')
-    },
-]
-
 const dummyMealData = [
     {
         userid: 'stcjsbd82352374586ring',
@@ -75,5 +54,5 @@ const systemPrompt = `You are a fitness and nutrition assistant. Your role is to
 
   Assume average MET (Metabolic Equivalent of Task) values unless user-specific adjustments are required.`;
 
-export { dummyMealData, onboardingdata, systemPrompt };
+export { dummyMealData, systemPrompt };
 

@@ -1,4 +1,3 @@
-import { useGlobalContext } from '@/lib/GlobalContext';
 import useDataStore from '@/utils/usestore';
 import { CameraType, CameraView, useCameraPermissions, } from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
@@ -13,9 +12,7 @@ const scan = () => {
   const [permission, requestPermission] = useCameraPermissions();
   const [enableTorch,setEnableTorch] = useState(false)
   const cameraRef = useRef<CameraView>(null);
-  const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [barcodeScanned, setBarcodeScanned] = useState(false);
-  const { user } = useGlobalContext()
   const [loading,setLoading]= useState(false)
 
   if (!permission) {
@@ -54,7 +51,6 @@ const scan = () => {
   async function takephoto(){
     if(cameraRef.current){
       const photo = await cameraRef.current.takePictureAsync()
-      setPhotoUri(photo.uri);
       await uploadPhotoToBackend(photo.uri)
     }
   }
@@ -80,8 +76,6 @@ const scan = () => {
         encoding: FileSystem.EncodingType.Base64,
       });
 
-      console.log('Uploading Image to the backend')
-
       const response  = await fetch(`${process.env.EXPO_PUBLIC_CALL_BACKEND_API}/meal/upload`,{
         method : 'POST',
         headers : {
@@ -90,8 +84,6 @@ const scan = () => {
         body : JSON.stringify({ foodImage:base64 })
       })
 
-      console.log('Receiveing response from the backend')
-
       if(!response){
         console.error('Response not received')
         return ;
@@ -99,9 +91,6 @@ const scan = () => {
   
       const data = await response.json()
       
-      // console.log("data",data?.message)
-      console.log("data",data)
-
       useDataStore.getState().setData(data?.data)
 
       useDataStore.getState().setPhotoUriofcaturedImage(photouri)

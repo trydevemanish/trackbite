@@ -19,8 +19,6 @@ const TabsLayout = () => {
             tabBarStyle : {
                 backgroundColor : 'white',
                 position : 'absolute',
-                // borderTopColor : '#0061FF1A',
-                // borderTopWidth : 1,
                 minHeight : 70,
             }
         }}
@@ -36,28 +34,6 @@ const TabsLayout = () => {
             }}
         />
 
-        {/* <Tabs.Screen 
-            name='yourgoal'
-            options={{
-                title : 'Your goal',
-                headerShown :false,
-                tabBarIcon : ({focused}) => (
-                    <TabIcon icon={require("@/assets/icons/goal.png")} focused={focused} title="goal" />
-                )
-            }}
-        /> */}
-
-        {/* <Tabs.Screen 
-            name='setting'
-            options={{
-                title : 'Setting',
-                headerShown :false,
-                tabBarIcon : ({focused}) => (
-                    <TabIcon icon={require("@/assets/icons/setting.png")} focused={focused} title="setting" />
-                )
-            }}
-        /> */}
-
         <Tabs.Screen
             name='scan'
             options={{
@@ -69,22 +45,6 @@ const TabsLayout = () => {
             }}
         />
         
-        {/* <Tabs.Screen
-            name='scan'
-            options={{
-                title : 'Scan',
-                headerShown :false,
-                tabBarIcon : ({focused}) => (
-                    <TabIcon icon={require("@/assets/icons/scan.png")} className='size-[56px]' focused={focused} />
-                ),
-                tabBarIconStyle : {
-                    position : 'absolute',
-                    top : -37,
-                    left : 30
-                }
-            }}
-        /> */}
-    
     </Tabs>
   )
 }

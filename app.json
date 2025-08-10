@@ -31,14 +31,6 @@
           "recordAudioAndroid": true
         }
       ],
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/notification-icon.png",
-          "color": "#ffffff",
-          "sounds": ["default"]
-        }
-      ],
       "expo-router",
       [
         "expo-splash-screen",

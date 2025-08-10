@@ -16,8 +16,6 @@ export default function RootLayout() {
     "Rubik-SemiBold" : require('../assets/fonts/Rubik-SemiBold.ttf'),
   })
 
-  // const [initialRoute, setInitialRoute] = useState<string | null>(null);
-
   useEffect(() => {
 
     if(fontsLoaded){
@@ -26,24 +24,12 @@ export default function RootLayout() {
 
   },[fontsLoaded])
 
-  // useEffect(() => {
-  //   const loadInitialRoute = async () => {
-  //     const hasSeen = await AsyncStorage.getItem('hasSeenOnboarding');
-  //     setInitialRoute(hasSeen === 'true' ? '(root)/(tabs)/home' : 'onboarding');
-  //   };
-
-  //   loadInitialRoute();
-  // },[])
-
-  // if(!initialRoute) return null;
-
   if(!fontsLoaded) return null; 
 
   return (
     <ThemeProvider>
       <GlobalProvider>
         <StatusBar backgroundColor={'#000'}   />
-        {/* <Stack screenOptions={{ headerShown : false }} initialRouteName={initialRoute} /> */}
         <Stack screenOptions={{ headerShown : false }} />
       </GlobalProvider>
     </ThemeProvider>

@@ -85,12 +85,13 @@ export async function getCurrentUser(params: Record<string, never>){
                 ...response,
                avatar: userAvatar?.toString(),
             }
+        } else {
+            console.log('Cannot get current user:')
+            return null;
         }
         
     } catch (error) {
-        console.error(error);
+        console.error(`Failed to get Current user: ${error}`);
         return false;
     }
-
-    return null;
 }

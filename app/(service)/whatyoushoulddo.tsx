@@ -36,8 +36,28 @@ const Whatyoushoulddo = () => {
   const [showEditPage,setShowEditPage] = useState(false)
   const [userWeight,setUserWeight] = useState('56')
   const [userAge,setUserAge] = useState('24')
-  const [receivedDataFromAi,SetReciviedDataFromAi] = useState({} as ActivitiesByIntensity)
   const [showReceivedDataToUser,setShowReceivedDataToUser] = useState(false)
+  const [receivedDataFromAi,SetReciviedDataFromAi] = useState<ActivitiesByIntensity>({
+    Light: [],
+    Moderate: [],
+    Intense: []
+  })
+  
+
+  const data : ActivitiesByIntensity =  {
+      Light: [
+        { activity: receivedDataFromAi?.Light?.[0]?.activity, time: receivedDataFromAi?.Light?.[0]?.time, icon: Walking },
+        { activity: receivedDataFromAi?.Light?.[1]?.activity, time: receivedDataFromAi?.Light?.[1]?.time, icon: Yoga }
+      ],
+      Moderate: [
+        { activity: receivedDataFromAi?.Moderate?.[0]?.activity, time: receivedDataFromAi?.Moderate?.[0]?.time, icon: Cycling },
+        { activity: receivedDataFromAi?.Moderate?.[1]?.activity, time: receivedDataFromAi?.Moderate?.[1]?.time, icon: Swimming }
+      ],
+      Intense: [
+        { activity: receivedDataFromAi?.Intense?.[0]?.activity, time: receivedDataFromAi?.Intense?.[0]?.time, icon: Running },
+        { activity: receivedDataFromAi?.Intense?.[1]?.activity, time: receivedDataFromAi?.Intense?.[1]?.time, icon: Walking }
+      ]
+    };
 
   const [activeTimer, setActiveTimer] = useState<{
     icon : any;
@@ -46,21 +66,6 @@ const Whatyoushoulddo = () => {
   } | null>(null);
 
   const calorie = passingCalorieDataToAiModel;
-
-  const data: ActivitiesByIntensity = {
-    Light: [
-      { activity: receivedDataFromAi?.Light[0]?.activity, time: receivedDataFromAi?.Light[0]?.time, icon: Walking },
-      { activity: receivedDataFromAi?.Light[1]?.activity, time: receivedDataFromAi?.Light[1]?.time, icon: Yoga }
-    ],
-    Moderate: [
-      { activity: receivedDataFromAi?.Moderate[0]?.activity, time: receivedDataFromAi?.Moderate[0]?.time, icon: Cycling },
-      { activity: receivedDataFromAi?.Moderate[1]?.activity, time: receivedDataFromAi?.Moderate[1]?.time, icon: Swimming }
-    ],
-    Intense: [
-      { activity: receivedDataFromAi?.Intense[0]?.activity, time: receivedDataFromAi?.Intense[0]?.time, icon: Running },
-      { activity: receivedDataFromAi?.Intense[1]?.activity, time: receivedDataFromAi?.Intense[1]?.time, icon: Walking }
-    ]
-  };
 
   const startTimer = (icon:any,activity: string, minutesStr: string) => {
     const minutes = parseInt(minutesStr);
@@ -148,17 +153,16 @@ const Whatyoushoulddo = () => {
       if(!response){
         throw new Error('Response dose not receivied')
       }
-  
+
       const dataFromai = filterdata(response!);
-  
+
       if(!dataFromai){
         throw new Error('Error in Filtering the received data')
       }
-  
-      SetReciviedDataFromAi(dataFromai)
 
       setShowReceivedDataToUser(true)
-  
+      SetReciviedDataFromAi(dataFromai)
+
     } catch (error) {
       throw new Error(`Failed in Generatinng response: ${error}`)
     }
@@ -191,7 +195,6 @@ const Whatyoushoulddo = () => {
                   </TouchableOpacity>
                 </View>
 
-                {/* <Text className='font-medium text-lg'>User Age: {userAge}</Text> */}
                 <TouchableOpacity className='bg-black-DEFAUlt py-1 mt-2 rounded-xl' onPress={GenerateSomeHelpsfullsuggesstion}>
                   <Text className='text-base text-accent-100 text-center font-rubik-medium px-4 py-2'>Submit</Text>
                 </TouchableOpacity>
@@ -216,9 +219,10 @@ const Whatyoushoulddo = () => {
                   {level} intensity workout you can prefer.
                 </Text>
 
-                {data[level].map((item) => (
+                {data[level].map((item,idx:number) => (
                   <View
-                    key={item.activity}
+                    // key={item.activity}
+                    key={idx}
                     className="flex flex-row justify-between p-3 rounded-md bg-[#fff] shadow-md items-center mb-2"
                   >
                     <View className='flex flex-row items-center gap-2 '>
@@ -240,7 +244,6 @@ const Whatyoushoulddo = () => {
               </View>
             ))}
 
-            {/* Timer Modal */}
               <Modal visible={!!activeTimer} transparent animationType="slide">
                 <View className="flex-1 justify-center items-center bg-black-DEFAUlt/60">
                   <View className="bg-[#fff] p-6 rounded-2xl w-80">
@@ -271,35 +274,34 @@ const Whatyoushoulddo = () => {
                 </View>
               </Modal>
 
-              {
-                showEditPage && 
-                <Modal transparent animationType="slide">
-                  <View className="flex-1 justify-center items-center bg-black-DEFAUlt/60">
-                    <View className="bg-[#fff] p-6 rounded-2xl w-80">
-                      <Text>Edit Your stats here...</Text>
-
-                        <View className='pt-5'>
-                          <Text className='font-rubik-medium text-center'>Your Weight: </Text>
-                          <TextInput value={userWeight} onChangeText={(weight) => setUserWeight(weight)} className='border-black-DEFAUlt rounded border my-2 px-2' />
-                        </View>
-                        <View className='pt-3'>
-                          <Text className='font-rubik-medium text-center'>Your Age: </Text>
-                          <TextInput value={userAge} onChangeText={(age) => setUserAge(age)} className='border-black-DEFAUlt rounded border my-2 px-2' />
-                        </View>
-                      
-                      <View className='py-2 flex flex-row items-center '>
-                          <TouchableOpacity onPress={() => setShowEditPage(false)} className='bg-[#41b867] w-full shadow-2xl shadow-[#fff] rounded-xl px-9 py-4'>
-                              <Text className='text-accent-100 font-rubik-medium text-center'>Submit</Text>
-                          </TouchableOpacity>
-                      </View>
-                    </View>
-                  </View>
-                </Modal>
-              }
-
             </View>
           }
 
+          {
+            showEditPage && 
+            <Modal transparent animationType="slide">
+              <View className="flex-1 justify-center items-center bg-black-DEFAUlt/60">
+                <View className="bg-[#fff] p-6 rounded-2xl w-80">
+                  <Text>Edit Your stats here...</Text>
+
+                    <View className='pt-5'>
+                      <Text className='font-rubik-medium text-center'>Your Weight: </Text>
+                      <TextInput value={userWeight} onChangeText={(weight) => setUserWeight(weight)} className='border-black-DEFAUlt rounded border my-2 px-2' />
+                    </View>
+                    <View className='pt-3'>
+                      <Text className='font-rubik-medium text-center'>Your Age: </Text>
+                      <TextInput value={userAge} onChangeText={(age) => setUserAge(age)} className='border-black-DEFAUlt rounded border my-2 px-2' />
+                    </View>
+                  
+                  <View className='py-2 flex flex-row items-center '>
+                      <TouchableOpacity onPress={() => setShowEditPage(false)} className='bg-[#41b867] w-full shadow-2xl shadow-[#fff] rounded-xl px-9 py-4'>
+                          <Text className='text-accent-100 font-rubik-medium text-center'>Submit</Text>
+                      </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+          }
         </View>
       </ScrollView>
     </SafeAreaView> 

@@ -1,9 +1,8 @@
 import Refer from "@/components/Refer";
 import { logout } from '@/lib/appwrite';
 import { useGlobalContext } from '@/lib/GlobalContext';
-import * as Notifications from 'expo-notifications';
 import { router } from "expo-router";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Alert, Image, ImageSourcePropType, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -12,20 +11,11 @@ interface SettingItemsProps {
   title : string;
   onPress? : () => void;
   textStyle? : string;
-  showArrow? : boolean;
-  showSwitch? : boolean;
 }
 
-type usefullServiceType = {
-  title : string,
-  scan : any,
-  handleFunction : any
-}
 
 export default function Profile() {
   const { isloggedIn,user, refetch } = useGlobalContext();
-  const [notitficationId,setNotificartionId] = useState('');
-  const [startWaterNotification,setStartWaterNotification] = useState(false)
 
   const handleLogout = async() => {
     const result = await logout()
@@ -39,50 +29,16 @@ export default function Profile() {
     }
   }
 
-  const Settingitems = ({icon,title,onPress,textStyle,showSwitch=false} : SettingItemsProps) => (
+  const Settingitems = ({icon,title,onPress,textStyle} : SettingItemsProps) => (
     <TouchableOpacity onPress={onPress} className='flex flex-row items-center justify-between w-full py-2 bg-[#056tg4] '>
       <View className='flex flex-row items-center gap-3'>
         <Image source={icon} className='size-6'/>
         <Text className={`text-lg font-rubik-medium text-black-DEFAUlt ${textStyle}`}>{title}</Text>
       </View>
-      <View>
-        {showSwitch && <Switch value={startWaterNotification} thumbColor={'#000'} onValueChange={() => setStartWaterNotification(prev => !prev)} /> }
-      </View>
     </TouchableOpacity>
   )
 
-  useEffect(() => {
-    if(startWaterNotification){
-      toHandleWaterReminderNotification()
-    } else {
-      cancelWaterReminder(notitficationId)
-    }
-  },[])
 
-  // to start the reminder notificaiton
-  async function toHandleWaterReminderNotification(){
-    const notificationIdFromExpoNotification = await Notifications.scheduleNotificationAsync({
-      content: {
-        title: 'Hydrate!',
-        body: 'Time to drink some water!',
-        sound: true, // Optional
-        sticky :false,
-      },
-      trigger: {
-        second  : 6 * 60 * 60 ,
-        repeats: true,
-      } as Notifications.NotificationTriggerInput,
-    });
-
-    setNotificartionId(notificationIdFromExpoNotification)
-  }
-
-  // to cancel the notificaiton 
-  async function cancelWaterReminder(notificationId:string) {
-    if (notificationId) {
-      await Notifications.cancelScheduledNotificationAsync(notificationId);
-    }
-  }
 
   return (
     <SafeAreaView className='h-full'>
@@ -117,14 +73,8 @@ export default function Profile() {
         </View>
 
         <View className="mt-5 bg-[#fff] shadow-lg shadow-[#fff] rounded-xl px-4">
-            <Settingitems icon={require('@/assets/icons/logout.png')} title='Logout' textStyle='text-danger' showArrow={false} onPress={handleLogout} />
-            <Settingitems icon={require('@/assets/icons/scan.png')} title='Scan' showArrow={false} onPress={() => router.push('/signin')} />
-        </View>
-
-        <View className="mt-6 bg-[#fff] shadow-lg shadow-[#fff] rounded-xl">
-            <View className="flex flex-col items-start px-4">
-              <Settingitems icon={require('@/assets/icons/reminder.png')} title='Reminder to drink water' showArrow={false} onPress={() => router.push('/signin')} showSwitch={true} />
-            </View>
+            <Settingitems icon={require('@/assets/icons/logout.png')} title='Logout' textStyle='text-danger' onPress={handleLogout} />
+            <Settingitems icon={require('@/assets/icons/scan.png')} title='Scan'  onPress={() => router.push('/signin')} />
         </View>
 
       </ScrollView>
