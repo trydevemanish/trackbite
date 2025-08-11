@@ -2,7 +2,9 @@
 
 A minimal nutition value app ~ track every bite.
 
-[![Watch the video](https://raw.githubusercontent.com/trydevemanish/trackbite/main/assets/githubImages/thumbnail.jpeg)](https://raw.githubusercontent.com/trydevemanish/trackbite/main/assets/githubImages/demovideo.mp4)
+<a href="https://raw.githubusercontent.com/trydevemanish/trackbite/main/assets/githubImages/demovideo.mp4">
+  <img src="https://raw.githubusercontent.com/trydevemanish/trackbite/main/assets/githubImages/thumbnail.jpeg" width="300">
+</a>
 
 ## Get started
 
