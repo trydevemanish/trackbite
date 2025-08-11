@@ -2,7 +2,7 @@
 
 A minimal nutition value app ~ track every bite.
 
-[![Watch the video](https://raw.githubusercontent.com/username/repository/branch/path/to/thumbnail.jpg)](https://raw.githubusercontent.com/username/repository/branch/path/to/video.mp4)
+[![Watch the video](https://raw.githubusercontent.com/trydevemanish/trackbite/main/assets/githubImages/thumbnail.jpeg)](https://raw.githubusercontent.com/trydevemanish/trackbite/main/assets/githubImages/demovideo.mp4)
 
 ## Get started
 
