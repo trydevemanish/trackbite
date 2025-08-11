@@ -1,4 +1,3 @@
-import ThemeProvider from '@/context/ThemeContext';
 import GlobalProvider from "@/lib/GlobalContext";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
@@ -27,12 +26,10 @@ export default function RootLayout() {
   if(!fontsLoaded) return null; 
 
   return (
-    <ThemeProvider>
-      <GlobalProvider>
-        <StatusBar backgroundColor={'#000'}   />
-        <Stack screenOptions={{ headerShown : false }} />
-      </GlobalProvider>
-    </ThemeProvider>
+    <GlobalProvider>
+      <StatusBar backgroundColor={'#000'}   />
+      <Stack screenOptions={{ headerShown : false }} />
+    </GlobalProvider>
   );
 }
   
